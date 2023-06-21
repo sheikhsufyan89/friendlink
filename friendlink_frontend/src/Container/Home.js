@@ -9,24 +9,22 @@ import { Client } from "../Client";
 
 import Pins from "./Pins";
 import logo from "../Assets/logo.png";
+import { fetchUser } from "../utils/fetchUser";
 
 const Home = () => {
   const [toggleSidebar, setToggleSidebar] = useState(false);
   const [user, setUser] = useState();
   const scrollRef = useRef(null);
 
-  const userInfo =
-    localStorage.getItem("user") !== "undefined"
-      ? JSON.parse(localStorage.getItem("user"))
-      : localStorage.clear();
+  const userInfo = fetchUser();
 
   useEffect(() => {
     const query = userQuery(userInfo?.googleId);
 
-    Client.fetch(query).then((data) => {
-      setUser(data[0]);
+    Client.fetch(query).then((doc) => {
+      setUser(doc[0]);
     });
-  });
+  }, [userInfo?.googleId]);
 
   useEffect(() => {
     scrollRef.current.scrollTo(0, 0);
